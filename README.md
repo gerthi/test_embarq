@@ -1,4 +1,4 @@
-My take on the [Getaround](https://www.getaround.com/) (ex Drivy) bac[backend](https://github.com/drivy/jobs/tree/master/backend) challenge.
+My take on the [Getaround](https://www.getaround.com/) (ex Drivy) [backend](https://github.com/drivy/jobs/tree/master/backend) challenge.
 
 All levels completed with testing.
 
