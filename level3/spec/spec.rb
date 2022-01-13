@@ -4,10 +4,9 @@ require 'Rental'
 require_relative '../main.rb'
 
 describe "TESTS LEVEL 3" do
-    before(:all) do
-        @car1 = Car.new({ "id"=> 1, "price_per_day"=> 2000, "price_per_km"=> 10 })
-        @rental1 = Rental.new( { "id"=> 1, "car_id"=> 1, "start_date"=> "2017-12-8", "end_date"=> "2017-12-8", "distance"=> 100 })
-    end
+    input = JSON.parse(File.read(File.join(__dir__, '../data/input.json')))
+    cars = input.dig('cars')
+    rentals = input.dig('rentals')
 
     context "- Car model" do
         it "a car instance has an id, a price_day & a price_km property" do
@@ -17,28 +16,36 @@ describe "TESTS LEVEL 3" do
         end
 
         it "the all method returns an array of car instances" do
-            expect(Car.all).to eq [@car1]
+            expect(Car.all).to be_an(Array)
+            expect(Car.all.size).to eq cars.size
         end
     end
 
     context "- Rental model" do
         it 'has an all method that returns an array of rental instances' do
-            expect(Rental.all).to eq [@rental1]
+            expect(Rental.all).to be_an(Array)
+            expect(Rental.all.size).to eq rentals.size
         end
 
         it 'is initialized with the discounted price if appropriate' do
-            expect(@rental1.price).to eq 3000
+            expect(Rental.all.first.price).to eq 3000
         end
 
         it 'has an export method that returns its id & price' do
-            expect(@rental1.export.dig(:id)).to eq 1
-            expect(@rental1.export.dig(:price)).to be_an(Integer)
+            expect(Rental.all.first.export.dig(:id)).to eq 1
+            expect(Rental.all.first.export.dig(:price)).to be_an(Integer)
         end
 
-        it 'calculates the commission' do
-            expect(@rental1.commission.keys.include?('insurance_fee')).to eq true
-            expect(@rental1.commission.keys.include?('assistance_fee')).to eq true
-            expect(@rental1.commission.keys.include?('drivy_fee')).to eq true
+        it 'calculates the commission properly' do
+            expect(Rental.all.first.commission.keys.include?('insurance_fee')).to eq true
+            expect(Rental.all.first.commission.dig('insurance_fee')).to eq 450
+            
+            expect(Rental.all.first.commission.keys.include?('assistance_fee')).to eq true
+            expect(Rental.all.first.commission.dig('assistance_fee')).to eq 100
+
+            expect(Rental.all.first.commission.keys.include?('drivy_fee')).to eq true
+            expect(Rental.all.first.commission.dig('drivy_fee')).to eq 350
+            
         end
     end
 

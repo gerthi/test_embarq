@@ -14,35 +14,37 @@ describe "TESTS LEVEL 4" do
     end
 
 
-    context "- Car model" do
-        it "is initialized with an id, a price_day & a price_km property" do
+    context "# Car model" do
+        it "- is initialized with an id, a price_day & a price_km property" do
             expect(Car.all.first.id).to be_an(Integer)
             expect(Car.all.first.price_day).to be_an(Integer)
             expect(Car.all.first.price_km).to be_an(Integer)
         end
 
-        it "has an all method returns an array of car instances" do
+        it "- has an all method returns an array of car instances" do
             expect(Car.all).to be_an(Array)
             expect(Car.all.size).to eq cars.size
+            expect(Car.all.sample).to be_a(Car)
         end
     end
 
-    context "- Rental model" do
-        it 'has an all method that returns an array of rental instances' do
+    context "# Rental model" do
+        it '- has an all method that returns an array of rental instances' do
             expect(Rental.all).to be_an(Array)
             expect(Rental.all.size).to eq rentals.size
+            expect(Rental.all.sample).to be_a(Rental)
         end
 
-        it 'is initialized with the discounted price if appropriate' do
+        it '- is initialized with the discounted price if appropriate' do
             expect(@rental1.price).to eq 3000
         end
 
-        it 'has an export method that returns its id & actions' do
+        it '- has an export method that returns its id & actions' do
             expect(@rental1.export.dig("id")).to eq 1
             expect(@rental1.export.dig("actions")).to be_an(Array)
         end
 
-        it 'calculates the commission properly' do
+        it '- calculates the commission properly' do
             expect(@rental1.commission.keys.include?('insurance_fee')).to eq true
             expect(@rental1.commission.dig('insurance_fee')).to eq 450
             
@@ -53,7 +55,7 @@ describe "TESTS LEVEL 4" do
             expect(@rental1.commission.dig('drivy_fee')).to eq 350
         end
 
-        it 'it dispatches actions with the correct amounts' do
+        it '- it dispatches actions with the correct amounts' do
             actions = @rental1.export.dig('actions')           
             
             expect(actions.select{ |a| a["who"].include?("driver")}.first["amount"]).to eq @rental1.price
@@ -64,8 +66,8 @@ describe "TESTS LEVEL 4" do
         end
     end
 
-    context "- Output file" do
-        it "is equal to the expected_output_file" do
+    context "# Output file" do
+        it "- is equal to the expected_output_file" do
             output = JSON.parse(File.read(File.join('data', 'output.json')))
             expected = JSON.parse(File.read(File.join('data', 'expected_output.json')))
             expect(output).to eq expected

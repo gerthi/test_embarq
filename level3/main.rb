@@ -4,8 +4,8 @@ require_relative 'lib/Car'
 require_relative 'lib/Rental'
 
 
-def execute
-    input = JSON.parse(File.read('./data/input.json'))
+def generate_output_file
+    input = JSON.parse(File.read(File.join(__dir__, 'data', 'input.json')))
 
     # creating the cars from the input data
     input.dig('cars').each do |data|
@@ -25,4 +25,4 @@ def execute
     end
 end
 
-execute
+generate_output_file

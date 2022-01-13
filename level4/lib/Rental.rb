@@ -35,18 +35,7 @@ class Rental
             "actions" => dispatch_actions,
         }
     end
-    
-    # class method to return every instances
-    def self.all
-        @@instances
-    end
 
-    # class method to generate the appropriate output
-    def self.generate_report
-        output = {
-            "rentals": @@instances.map{ |r| r.export }
-        }
-    end
     
     private
 
@@ -102,5 +91,17 @@ class Rental
                 "amount" => amount.to_i
             }
         end
+    end
+    
+    # class method to return every instances
+    def self.all
+        @@instances
+    end
+
+    # class method to generate the appropriate output
+    def self.generate_report
+        output = {
+            "rentals": @@instances.map{ |r| r.export }
+        }
     end
 end
