@@ -16,13 +16,25 @@ class Option
     def details
         case @type
         when "gps"
-            ["owner", 500]
+            {
+                "who" => "owner",
+                "price" => 500
+            }
         when "baby_seat"
-            ["owner", 200]
+            {
+                "who" => "owner",
+                "price" => 200
+            }
         when "additional_insurance"
-            ["drivy", 1000]
+            {
+                "who" => "drivy",
+                "price" => 1000
+            }
         else
-            ["", 0]
+            {
+                "who" => "",
+                "price" => 0
+            }
         end
     end
 

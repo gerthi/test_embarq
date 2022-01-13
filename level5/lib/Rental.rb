@@ -44,29 +44,21 @@ class Rental
     def compute_options
         owner_option_fee = 0
         drivy_option_fee = 0
+
+        # if there are any options :
+        # fetch their prices and sum them to calculate owner & drivy share 
         if @options
-            owner_option_fee = (@options.select { |o| o.details.first == "owner" }.map{ |o| o.details.last }.sum * @duration).to_i
-            drivy_option_fee = (@options.select { |o| o.details.first == "drivy" }.map{ |o| o.details.last }.sum * @duration).to_i
+            owner_option_fee = (@options.select { |o| o.details["who"] == "owner" }.map{ |o| o.details["price"] }.sum * @duration).round
+            drivy_option_fee = (@options.select { |o| o.details["who"] == "drivy" }.map{ |o| o.details["price"] }.sum * @duration).round
         end
+
+        # returning the hash with the computed values
         {
             "total" => owner_option_fee + drivy_option_fee,
             "drivy" => drivy_option_fee,
             "owner" => owner_option_fee
         }
     end
-
-    # class method to return every instances
-    def self.all
-        @@instances
-    end
-
-    # class method to generate the appropriate output
-    def self.generate_report
-        output = {
-            "rentals": @@instances.map{ |r| r.export }
-        }
-    end
-
 
     private
 
@@ -106,29 +98,44 @@ class Rental
         assistance_fee = 100 * @duration
         drivy_fee = base_commission - (insurance_fee + assistance_fee) + compute_options["drivy"]
         {
-            "insurance_fee" => insurance_fee.to_i,
-            "assistance_fee" => assistance_fee.to_i,
-            "drivy_fee" => drivy_fee.to_i
+            "insurance_fee" => insurance_fee.round,
+            "assistance_fee" => assistance_fee.round,
+            "drivy_fee" => drivy_fee.round
         }
     end
 
     # building actions array for the output file
     def dispatch_actions
-        @@actions.entries.map do |action| 
+
+        # for each possible actions
+        @@actions.entries.map do |action|
+            
+            # calculate the correct transaction amount depending of the actor
             case action.first
             when "driver"
                 amount = @base_price + compute_options["total"]
             when "owner"
                 amount = @base_price * 0.7 + compute_options["owner"]
             else
-                amount = @commission.select { |k,v| k.include? action.first }.values[0]
+                amount = @commission.select { |k,_| k.include? action.first }.values[0]
             end
             {
                 "who" => action.first,
                 "type" => action.last,
-                "amount" => amount.to_i 
+                "amount" => amount.round 
             }
         end
     end
+    
+    # class method to return every instances
+    def self.all
+        @@instances
+    end
 
+    # class method to generate the appropriate output
+    def self.generate_report
+        output = {
+            "rentals": @@instances.map{ |r| r.export }
+        }
+    end
 end
